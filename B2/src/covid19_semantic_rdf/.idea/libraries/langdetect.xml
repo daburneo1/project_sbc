@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="langdetect">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../../../../../../Program Files/Java/jdk-12/lib/langdetect-09-13-2011/lib/langdetect.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
