@@ -7,6 +7,7 @@ import clases.Reference;
 import com.cybozu.labs.langdetect.Detector;
 import com.cybozu.labs.langdetect.DetectorFactory;
 import com.cybozu.labs.langdetect.LangDetectException;
+
 import data.DATExtract;
 
 import java.io.IOException;
@@ -177,11 +178,11 @@ public class build {
                 if(columnName.equals("paperId")){
                     a.setIdentifier(value);
                 }
-                if(columnName.equals("title")){
-                    a.setTitle(value);
-                    String language = detectLanguage(value);
-                    a.setLanguage(language);
-                }
+//                if(columnName.equals("title")){
+//                    a.setTitle(value);
+//                    String language = detectLanguage(value);
+//                    a.setLanguage(language);
+//                }
                 if(columnName.equals("venue")){
                     a.setVenue(value);
                 }
@@ -212,14 +213,14 @@ public class build {
     }
 
 
-    public void CreateDetectorFactory() throws LangDetectException {
-        DetectorFactory.loadProfile("C:\\Program Files\\Java\\jdk-12\\lib\\langdetect-09-13-2011\\profiles");
-        {
-            try {
-                d = DetectorFactory.create();
-            } catch (LangDetectException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+//    public void CreateDetectorFactory() throws LangDetectException {
+//        DetectorFactory.loadProfile("C:\\Program Files\\Java\\jdk-12\\lib\\langdetect-09-13-2011\\profiles");
+//        {
+//            try {
+//                d = DetectorFactory.create();
+//            } catch (LangDetectException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 }

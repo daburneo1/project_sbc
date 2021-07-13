@@ -129,9 +129,9 @@ public class main {
 
         Resource article = null;
 
-        build.CreateDetectorFactory();
+//        build.CreateDetectorFactory();
 
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 1496; i++) {
             System.out.println(i);
             objArticle = build.BuildArticle(i);
 
@@ -147,7 +147,7 @@ public class main {
                 article.addProperty(titleProperty, objArticle.getTitle());
             }
             if (objArticle.getUri() != null) {
-                article.addProperty(uriProperty, objArticle.getUri());
+                article.addProperty(uriProperty, '<'+objArticle.getUri()+'>');
             }
             if (objArticle.getDate() != null) {
                 article.addProperty(dateProperty, objArticle.getDate());
@@ -172,8 +172,10 @@ public class main {
                             .replace("(", "")
                             .replace(")", "")
                             .replace("%","")
-                            .replace(".", "");
-                    article.addProperty(citesProperty, referenceURI);
+                            .replace(".", "")
+                            .replace("<", "")
+                            .replace(">", "");
+                    article.addProperty(citesProperty, '<'+referenceURI+'>');
                     model.createResource(referenceURI)
                             .addProperty(RDF.type, Article)
                             .addProperty(titleProperty, objArticle.getArrayReferences().get(j).getTitle())
@@ -181,7 +183,7 @@ public class main {
                             .addProperty(doiProperty, objArticle.getArrayReferences().get(j).getDoi());
                 }
                 String CitationFrecuencyURI = dataPrefix + "g-citation-" + objArticle.getIdentifier() + "-2021-05-06";
-                article.addProperty(hasGlobalCountDateProperty, CitationFrecuencyURI);
+                article.addProperty(hasGlobalCountDateProperty, '<'+CitationFrecuencyURI+'>');
                 model.createResource(CitationFrecuencyURI)
                         .addProperty(RDF.type, GlobalCitationCount)
                         .addProperty(hasGlobalCountDateProperty, "'2021-05-16'^^xsd:date")
@@ -189,17 +191,17 @@ public class main {
             }
             if (objArticle.getArrayFieldStudy() != null) {
                 for (int j = 0; j < objArticle.getArrayFieldStudy().size(); j++) {
-                    String topicsURI = dataPrefix + objArticle.getArrayFieldStudy().get(j).getFieldStudy();
-                    article.addProperty(subjectProperty, topicsURI);
+                    String topicsURI = dataPrefix + objArticle.getArrayFieldStudy().get(j).getFieldStudy().replace(" ", "_");
+                    article.addProperty(subjectProperty, '<'+topicsURI+'>');
                     model.createResource(topicsURI)
                             .addProperty(RDF.type, Concept)
                             .addProperty(prefLabelProperty, objArticle.getArrayFieldStudy().get(j).getFieldStudy());
                 }
             }
-            if (objArticle.getVenue() != null) {
+            if (!objArticle.getVenue().equals("")) {
                 String journalURI = dataPrefix + objArticle.getVenue().replace(" ", "_")
                         .replace(".", "");
-                article.addProperty(isPartOfProperty, journalURI);
+                article.addProperty(isPartOfProperty, '<'+journalURI+'>');
                 model.createResource(journalURI)
                         .addProperty(RDF.type, Journal)
                         .addProperty(nameProperty, objArticle.getVenue());
@@ -210,11 +212,11 @@ public class main {
                             .replace("Ñ", "N")
                             .replace("ñ", "n")
                             .replace(".", "");
-                    article.addProperty(creatorProperty, creatorURI);
+                    article.addProperty(creatorProperty, '<'+creatorURI+'>');
                     model.createResource(creatorURI)
                             .addProperty(RDF.type, Person)
                             .addProperty(nameProperty, objArticle.getArrayAuthors().get(j).getName())
-                            .addProperty(uriProperty, objArticle.getArrayAuthors().get(j).getUrl())
+                            .addProperty(uriProperty, '<'+objArticle.getArrayAuthors().get(j).getUrl()+'>')
                             .addProperty(influentialProperty, String.valueOf(objArticle.getArrayAuthors().get(j).getInfluentialCC()))
                             .addProperty(rankProperty, String.valueOf(j + 1));
                 }
@@ -223,12 +225,11 @@ public class main {
 
         model.add(article, RDF.type, Article);
 
-//        File f = new File("C:\\Users\\Davicho\\OneDrive - Universidad Técnica Particular de Loja - UTPL\\Documentos\\Sistemas\\10mo\\SBC\\covid19_semantic_rdf\\data\\covid19_semantic.rdf");
-//        FileOutputStream os = new FileOutputStream(f);
+        File f = new File("C:\\Users\\Davicho\\OneDrive - Universidad Técnica Particular de Loja - UTPL\\Documentos\\Sistemas\\10mo\\SBC\\Repositorio\\project_sbc\\B2\\src\\covid19_semantic_rdf\\data\\covid19_semantic.rdf");
+        FileOutputStream os = new FileOutputStream(f);
 
-        model.write(System.out);
         model.write(System.out, "N3"); //xml
-//        RDFDataMgr.write(os, model, Lang.TURTLE);
+        RDFDataMgr.write(os, model, Lang.RDFXML);
 
         model.close();
 
