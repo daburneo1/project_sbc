@@ -178,11 +178,12 @@ public class build {
                 if(columnName.equals("paperId")){
                     a.setIdentifier(value);
                 }
-//                if(columnName.equals("title")){
-//                    a.setTitle(value);
+                if(columnName.equals("title")){
+                    a.setTitle(value);
+                    a.setLanguage("en");
 //                    String language = detectLanguage(value);
 //                    a.setLanguage(language);
-//                }
+                }
                 if(columnName.equals("venue")){
                     a.setVenue(value);
                 }

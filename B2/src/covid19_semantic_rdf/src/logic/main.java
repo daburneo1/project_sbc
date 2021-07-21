@@ -134,7 +134,7 @@ public class main {
         for (int i = 1; i <=1496; i++) {
             System.out.println(i);
             objArticle = build.BuildArticle(i);
-
+            System.out.println(objArticle.toString());
             String articleURI = dataPrefix + objArticle.getIdentifier();
 
             article = model.createResource(articleURI)
