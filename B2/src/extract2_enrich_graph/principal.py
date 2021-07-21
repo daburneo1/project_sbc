@@ -18,13 +18,13 @@ def create_triples(idArticle, mentions, categories):
     triples = []
 
     for a in mentions:
-        triples_mention = idArticle + " schema:mentions " + "<" + a + ">" + " ."
-        mention_type = "<" + a + ">" + " rdfs:label " + "'" + getLabel(a) + "' ."
+        triples_mention = "JournalArticle:" + idArticle + " schema:mentions " + "<" + a + ">" + " ."
+        mention_type = "<" + a + ">" + " rdf:label " + "'" + getLabel(a) + "' ."
         triples.append(triples_mention)
         triples.append(mention_type)
 
     for b in categories:
-        triples_subject = idArticle + " dct:subject " + "<" + b + ">" + " ."
+        triples_subject = "JournalArticle:" + idArticle + " dct:subject " + "<" + b + ">" + " ."
         triples.append(triples_subject)
 
     print(triples)
@@ -56,7 +56,7 @@ def create_abstract(Articles):
             if item2 not in result:
                 result.append(item2)
 
-    with open('tripletas.rdf', 'w') as temp_file:
+    with open('tripletas_abstract.rdf', 'w') as temp_file:
         for item in result:
                 temp_file.write("%s\n" % item)
 
@@ -75,7 +75,7 @@ def create_object_article(tupla, fieldStudy):
 def get_articles_data_base():
     inst = DataBase()
     Articles = []
-    for i in range(1495):  # 1496
+    for i in range(1495):  # 1495
         objArticle = inst.get_article(i + 1)
         idArticle = objArticle[0]
         fieldStudy = inst.get_field_study(idArticle)
@@ -99,12 +99,33 @@ def create_field_study(Articles):
 
 
 def create_venue(Articles):
+    mentions = []
+    categories = []
+    triples = []
     for x in Articles:
+        print(x.get_id())
         if x.get_venue() != None:
             dbCategories = semantic_annotation.getAnnotations(x.get_paperId(), x.get_venue())
             for a in dbCategories:
-                print(40 * '-')
-                print(a)  # DBpedia categories
+                mentions.append(a[0])
+                categories.append(a[1])
+            mentions = list(set(mentions))
+            categories = list(set(categories))
+            # print(mentions)
+            # print(categories)
+            idArticle = x.get_paperId()
+
+            triples.append(create_triples(idArticle, mentions, categories))
+
+    result = []
+    for item in triples:
+        for item2 in item:
+            if item2 not in result:
+                result.append(item2)
+
+    with open('tripletas_venue.rdf', 'w') as temp_file:
+        for item in result:
+            temp_file.write("%s\n" % item)
 
 
 def main():

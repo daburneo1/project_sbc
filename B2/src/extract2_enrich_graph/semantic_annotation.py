@@ -41,7 +41,7 @@ def getAnnotations(paper_id, text):
 
     for i in range(len(annotations)):
         ann = annotations[i]['spot']
-        if annotations[i]['rho'] > 0.1 and annotations[i]['link_probability'] > 0.1:
+        if annotations[i]['rho'] > 0.05 and annotations[i]['link_probability'] > 0.05:
             ann = ann.capitalize()
             ann = dbr + ann.replace(' ', '_')
             # Guardar como recursos de la Dbpedia:
@@ -52,4 +52,5 @@ def getAnnotations(paper_id, text):
                 if status.status_code == 200:
                     dbCategories.append([ann, dbc + c.replace(' ', '_')])
                 break
+    print(dbCategories)
     return dbCategories

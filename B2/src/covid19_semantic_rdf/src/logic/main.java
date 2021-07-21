@@ -131,7 +131,7 @@ public class main {
 
 //        build.CreateDetectorFactory();
 
-        for (int i = 1; i <= 1496; i++) {
+        for (int i = 1; i <=1496; i++) {
             System.out.println(i);
             objArticle = build.BuildArticle(i);
 
@@ -147,7 +147,8 @@ public class main {
                 article.addProperty(titleProperty, objArticle.getTitle());
             }
             if (objArticle.getUri() != null) {
-                article.addProperty(uriProperty, '<'+objArticle.getUri()+'>');
+                Resource uri = model.createResource(dataPrefix + objArticle.getUri());
+                article.addProperty(uriProperty, uri);
             }
             if (objArticle.getDate() != null) {
                 article.addProperty(dateProperty, objArticle.getDate());
@@ -175,7 +176,8 @@ public class main {
                             .replace(".", "")
                             .replace("<", "")
                             .replace(">", "");
-                    article.addProperty(citesProperty, '<'+referenceURI+'>');
+                    Resource reference = model.createResource(dataPrefix + referenceURI);
+                    article.addProperty(citesProperty, reference);
                     model.createResource(referenceURI)
                             .addProperty(RDF.type, Article)
                             .addProperty(titleProperty, objArticle.getArrayReferences().get(j).getTitle())
@@ -183,7 +185,8 @@ public class main {
                             .addProperty(doiProperty, objArticle.getArrayReferences().get(j).getDoi());
                 }
                 String CitationFrecuencyURI = dataPrefix + "g-citation-" + objArticle.getIdentifier() + "-2021-05-06";
-                article.addProperty(hasGlobalCountDateProperty, '<'+CitationFrecuencyURI+'>');
+                Resource hasGlobalCountDate = model.createResource(dataPrefix + CitationFrecuencyURI);
+                article.addProperty(hasGlobalCountDateProperty, hasGlobalCountDate);
                 model.createResource(CitationFrecuencyURI)
                         .addProperty(RDF.type, GlobalCitationCount)
                         .addProperty(hasGlobalCountDateProperty, "'2021-05-16'^^xsd:date")
@@ -192,7 +195,8 @@ public class main {
             if (objArticle.getArrayFieldStudy() != null) {
                 for (int j = 0; j < objArticle.getArrayFieldStudy().size(); j++) {
                     String topicsURI = dataPrefix + objArticle.getArrayFieldStudy().get(j).getFieldStudy().replace(" ", "_");
-                    article.addProperty(subjectProperty, '<'+topicsURI+'>');
+                    Resource subject = model.createResource(dataPrefix + topicsURI);
+                    article.addProperty(subjectProperty, subject);
                     model.createResource(topicsURI)
                             .addProperty(RDF.type, Concept)
                             .addProperty(prefLabelProperty, objArticle.getArrayFieldStudy().get(j).getFieldStudy());
@@ -201,7 +205,8 @@ public class main {
             if (!objArticle.getVenue().equals("")) {
                 String journalURI = dataPrefix + objArticle.getVenue().replace(" ", "_")
                         .replace(".", "");
-                article.addProperty(isPartOfProperty, '<'+journalURI+'>');
+                Resource venue = model.createResource(dataPrefix + journalURI);
+                article.addProperty(isPartOfProperty, venue);
                 model.createResource(journalURI)
                         .addProperty(RDF.type, Journal)
                         .addProperty(nameProperty, objArticle.getVenue());
@@ -212,11 +217,13 @@ public class main {
                             .replace("Ñ", "N")
                             .replace("ñ", "n")
                             .replace(".", "");
-                    article.addProperty(creatorProperty, '<'+creatorURI+'>');
+                    Resource creator = model.createResource(dataPrefix + creatorURI);
+                    article.addProperty(creatorProperty, creator);
+                    Resource uriAuthor = model.createResource(dataPrefix + objArticle.getArrayAuthors().get(j).getUrl());
                     model.createResource(creatorURI)
                             .addProperty(RDF.type, Person)
                             .addProperty(nameProperty, objArticle.getArrayAuthors().get(j).getName())
-                            .addProperty(uriProperty, '<'+objArticle.getArrayAuthors().get(j).getUrl()+'>')
+                            .addProperty(uriProperty, uriAuthor)
                             .addProperty(influentialProperty, String.valueOf(objArticle.getArrayAuthors().get(j).getInfluentialCC()))
                             .addProperty(rankProperty, String.valueOf(j + 1));
                 }
