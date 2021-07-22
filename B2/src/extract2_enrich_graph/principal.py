@@ -54,11 +54,14 @@ def create_abstract(Articles):
     for item in triples:
         for item2 in item:
             if item2 not in result:
+                print(item2)
                 result.append(item2)
+                with open('tripletas_abstract.rdf', 'a') as f:
+                    f.write("%s\n" % item2)
 
-    with open('tripletas_abstract.rdf', 'w') as temp_file:
-        for item in result:
-                temp_file.write("%s\n" % item)
+    # with open('tripletas_abstract.rdf', 'a') as f:
+    #     for item in result:
+    #             f.write("%s\n" % item)
 
 
 def create_object_article(tupla, fieldStudy):
@@ -90,12 +93,37 @@ def get_articles_data_base():
 
 
 def create_field_study(Articles):
+    mentions = []
+    categories = []
+    triples = []
     for x in Articles:
+        print(x.get_id())
         if x.get_fieldsOfStudy() != None:
-            dbCategories = semantic_annotation.getAnnotations(x.get_paperId(), x.get_fieldsOfStudy())
+            print(x.get_fieldsOfStudy())
+            dbCategories = semantic_annotation.getAnnotationsFieldStudy(x.get_paperId(), x.get_fieldsOfStudy())
             for a in dbCategories:
-                print(40 * '-')
-                print(a)  # DBpedia categories
+                mentions.append(a[0])
+                categories.append(a[1])
+            mentions = list(set(mentions))
+            categories = list(set(categories))
+            # print(mentions)
+            # print(categories)
+            idArticle = x.get_paperId()
+
+            triples.append(create_triples(idArticle, mentions, categories))
+
+    result = []
+    for item in triples:
+        for item2 in item:
+            if item2 not in result:
+                print(item2)
+                result.append(item2)
+                with open('tripletas_field_study.rdf', 'a') as f:
+                    f.write("%s\n" % item2)
+
+    # with open('tripletas_field_study.rdf', 'w') as temp_file:
+    #     for item in result:
+    #         temp_file.write("%s\n" % item)
 
 
 def create_venue(Articles):
@@ -104,7 +132,7 @@ def create_venue(Articles):
     triples = []
     for x in Articles:
         print(x.get_id())
-        if x.get_venue() != None:
+        if x.get_venue() != "":
             dbCategories = semantic_annotation.getAnnotations(x.get_paperId(), x.get_venue())
             for a in dbCategories:
                 mentions.append(a[0])
@@ -121,11 +149,15 @@ def create_venue(Articles):
     for item in triples:
         for item2 in item:
             if item2 not in result:
+                print(item2)
                 result.append(item2)
+                with open('tripletas_venue.rdf', 'a') as f:
+                    f.write("%s\n" % item2)
 
-    with open('tripletas_venue.rdf', 'w') as temp_file:
-        for item in result:
-            temp_file.write("%s\n" % item)
+
+    # with open('tripletas_venue.rdf', 'w') as temp_file:
+    #     for item in result:
+    #         temp_file.write("%s\n" % item)
 
 
 def main():

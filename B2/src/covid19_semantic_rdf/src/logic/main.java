@@ -147,7 +147,7 @@ public class main {
                 article.addProperty(titleProperty, objArticle.getTitle());
             }
             if (objArticle.getUri() != null) {
-                Resource uri = model.createResource(dataPrefix + objArticle.getUri());
+                Resource uri = model.createResource(objArticle.getUri());
                 article.addProperty(uriProperty, uri);
             }
             if (objArticle.getDate() != null) {
@@ -176,7 +176,7 @@ public class main {
                             .replace(".", "")
                             .replace("<", "")
                             .replace(">", "");
-                    Resource reference = model.createResource(dataPrefix + referenceURI);
+                    Resource reference = model.createResource(referenceURI);
                     article.addProperty(citesProperty, reference);
                     model.createResource(referenceURI)
                             .addProperty(RDF.type, Article)
@@ -185,7 +185,7 @@ public class main {
                             .addProperty(doiProperty, objArticle.getArrayReferences().get(j).getDoi());
                 }
                 String CitationFrecuencyURI = dataPrefix + "g-citation-" + objArticle.getIdentifier() + "-2021-05-06";
-                Resource hasGlobalCountDate = model.createResource(dataPrefix + CitationFrecuencyURI);
+                Resource hasGlobalCountDate = model.createResource(CitationFrecuencyURI);
                 article.addProperty(hasGlobalCountDateProperty, hasGlobalCountDate);
                 model.createResource(CitationFrecuencyURI)
                         .addProperty(RDF.type, GlobalCitationCount)
@@ -195,7 +195,7 @@ public class main {
             if (objArticle.getArrayFieldStudy() != null) {
                 for (int j = 0; j < objArticle.getArrayFieldStudy().size(); j++) {
                     String topicsURI = dataPrefix + objArticle.getArrayFieldStudy().get(j).getFieldStudy().replace(" ", "_");
-                    Resource subject = model.createResource(dataPrefix + topicsURI);
+                    Resource subject = model.createResource(topicsURI);
                     article.addProperty(subjectProperty, subject);
                     model.createResource(topicsURI)
                             .addProperty(RDF.type, Concept)
@@ -205,7 +205,7 @@ public class main {
             if (!objArticle.getVenue().equals("")) {
                 String journalURI = dataPrefix + objArticle.getVenue().replace(" ", "_")
                         .replace(".", "");
-                Resource venue = model.createResource(dataPrefix + journalURI);
+                Resource venue = model.createResource(journalURI);
                 article.addProperty(isPartOfProperty, venue);
                 model.createResource(journalURI)
                         .addProperty(RDF.type, Journal)
@@ -217,9 +217,9 @@ public class main {
                             .replace("Ñ", "N")
                             .replace("ñ", "n")
                             .replace(".", "");
-                    Resource creator = model.createResource(dataPrefix + creatorURI);
+                    Resource creator = model.createResource(creatorURI);
                     article.addProperty(creatorProperty, creator);
-                    Resource uriAuthor = model.createResource(dataPrefix + objArticle.getArrayAuthors().get(j).getUrl());
+                    Resource uriAuthor = model.createResource(objArticle.getArrayAuthors().get(j).getUrl());
                     model.createResource(creatorURI)
                             .addProperty(RDF.type, Person)
                             .addProperty(nameProperty, objArticle.getArrayAuthors().get(j).getName())
