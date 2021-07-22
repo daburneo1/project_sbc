@@ -131,7 +131,7 @@ public class main {
 
 //        build.CreateDetectorFactory();
 
-        for (int i = 1; i <=1496; i++) {
+        for (int i = 1; i <=10; i++) {
             System.out.println(i);
             objArticle = build.BuildArticle(i);
             System.out.println(objArticle.toString());
@@ -236,7 +236,7 @@ public class main {
         FileOutputStream os = new FileOutputStream(f);
 
         model.write(System.out, "N3"); //xml
-        RDFDataMgr.write(os, model, Lang.RDFXML);
+//        RDFDataMgr.write(os, model, Lang.RDFXML);
 
         model.close();
 
