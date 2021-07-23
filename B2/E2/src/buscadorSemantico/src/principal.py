@@ -82,7 +82,7 @@ def searchArticleAuthor():
     for result in results["results"]["bindings"]:
         print("URI: " + result["s"]["value"])
         print("Titulo: " + result["title"]["value"])
-        print("Autor: " + result["s"]["value"])
+        print("Autor: " + result["name"]["value"])
         print("URL: " + result["url"]["value"])
         print('---------------------------')
 
@@ -259,7 +259,7 @@ def searchArticleKey():
                                                         
                         SELECT ?s ?title ?url
                         WHERE{
-                        VALUES ?keyword {'"""+key+"""'}
+                        VALUES ?keyword {'""" + key + """'}
                         ?s rdf:type vivo:Article .
                         ?s dct:title ?title .
                         ?s bibo:uri ?url .
@@ -284,6 +284,53 @@ def searchArticleKey():
     main()
 
 
+def searchArticleDoi():
+    print("Ingrese el doi del Articulo")
+    doi = input()
+
+    sparql = SPARQLWrapper("http://localhost:7200/repositories/covid19_sbc")
+    sparql.setQuery("""
+                        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+                        PREFIX vivo: <http://vivoweb.org/ontology/core#>
+                        PREFIX bibo: <http://purl.org/ontology/bibo/>
+                        PREFIX journalArticle: <http://utpl.edu.ec/sbc/>
+                        PREFIX dc: <http://purl.org/dc/terms/>
+                        PREFIX skos: <http://www.w3.org/2004/02/skos/core#/>              
+                        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+                        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+                        SELECT ?s ?title ?url ?field ?author ?rank
+                        WHERE{
+                        values ?keyword{'"""+doi+"""'}
+                        ?s rdf:type vivo:Article .
+                        ?s dc:title ?title .
+                        ?s bibo:doi ?doi .
+                        ?s bibo:uri ?url .
+                        ?s dc:subject ?mentions .
+                        ?s dc:creator ?person .
+                        ?person foaf:name ?author .
+                        ?person vivo:rank ?rank .
+                        ?mentions skos:prefLabel ?field
+                            FILTER(?doi = ?keyword)
+                        }ORDER BY ASC(?rank)
+                """)
+    resultados = 0
+    sparql.setReturnFormat(JSON)
+    results = sparql.query().convert()
+    for result in results["results"]["bindings"]:
+        print("URI: " + result["s"]["value"])
+        print("Titulo: " + result["title"]["value"])
+        print("Campo de Estudio: " + result["field"]["value"])
+        print("Autor: " + result["author"]["value"])
+        print("Autor Nº: " + result["rank"]["value"])
+        print("URL: " + result["url"]["value"])
+        print('---------------------------')
+        resultados = resultados + 1
+
+    print("Número de resultados: " + str(resultados) + "\n\n\n")
+
+    main()
+
+
 def main():
     print("Seleccione un número\n\n")
     print("1. Modelos de consultas pre elaboradas")
@@ -291,13 +338,16 @@ def main():
     print("3. Buscar articulos por autor")
     print("4. Buscar articulos por campo de estudio")
     print("5. Buscar articulos por palabras clave")
+    print("6. Buscar articulo por el doi")
     print("X. Salir")
 
     opcion = input()
 
     if opcion == "1":
-        print("1. ¿Cuales son los artículos pertenecientes al área de Medicina que han sido creados en el año 2021 y cual es su doi y autor?")
-        print("2. ¿Cuáles son los artículos cuya categoría pertenecen únicamente al área de Medicina y que son mayores al año 2017 y menores al año 2021?")
+        print(
+            "1. ¿Cuales son los artículos pertenecientes al área de Medicina que han sido creados en el año 2021 y cual es su doi y autor?")
+        print(
+            "2. ¿Cuáles son los artículos cuya categoría no pertenece al área de Medicina y que son mayores al año 2017 y menores al año 2021?")
         print("3. ¿Cuáles son los nombres de los artículos que tienen en el título o el abstract la palabra “Vaccine”?")
 
         seleccion = input()
@@ -322,6 +372,9 @@ def main():
 
     if opcion == "5":
         searchArticleKey()
+
+    if opcion == "6":
+        searchArticleDoi()
 
     if opcion == "X":
         pass
